@@ -1,0 +1,192 @@
+<!-- Local rules -->
+
+<!-- Modify it at your will. -->
+<!-- Copyright (C) 2015, Wazuh Inc. -->
+
+<!-- Example -->
+<group name="local,syslog,sshd,">
+
+  <!--
+  Dec 10 01:02:02 host sshd[1234]: Failed none for root from 1.1.1.1 port 1066 ssh2
+  -->
+  <rule id="100001" level="5">
+    <if_sid>5716</if_sid>
+    <srcip>1.1.1.1</srcip>
+    <description>sshd: authentication failed from IP 1.1.1.1.</description>
+    <group>authentication_failed,pci_dss_10.2.4,pci_dss_10.2.5,</group>
+  </rule>
+
+</group>
+
+<group name="syscheck,pci_dss_11.5,nist_800_53_SI.7,">
+    <!-- Rules for Linux systems VT FIM -->
+    <rule id="100200" level="7">
+        <if_sid>550</if_sid>
+        <field name="file">/home/group8/Desktop/activity</field>
+        <description>File modified</description>
+    </rule>
+    <rule id="100201" level="7">
+        <if_sid>554</if_sid>
+        <field name="file">/home/group8/Desktop/activity</field>
+        <description>File added</description>
+    </rule>
+</group>
+
+<group name="virustotal,">
+  <rule id="100092" level="12">
+    <if_sid>657</if_sid>
+    <match>Successfully removed threat</match>
+    <description>$(parameters.program) removed threat located at $(parameters.alert.data.virustotal.source.file)</description>
+  </rule>
+
+  <rule id="100093" level="12">
+    <if_sid>657</if_sid>
+    <match>Error removing threat</match>
+    <description>Error removing threat located at $(parameters.alert.data.virustotal.source.file)</description>
+  </rule>
+</group>
+
+
+<!--
+
+<group name="web,accesslog,">
+  <rule id="31108" level="3" overwrite="yes">
+    <if_sid>31100</if_sid>
+    <id>^2|^3</id>
+    <compiled_rule>is_simple_http_request</compiled_rule>
+    <description>Simple query.</description>
+  </rule>
+</group>
+
+-->
+
+<!-- 
+<group name="web,accesslog,">
+  <rule id="100300" level="7">
+    <if_sid>31100,31108</if_sid>
+    <url>=select%20|select+|insert%20|%20from%20|%20where%20|union%20|</url>
+    <url>union+|where+|null,null|xp_cmdshell</url>
+    <url>%27|%20OR%20|%3D|%2D%2D</url> 
+    <url>=%27|%20OR%20|%3D|%2D%2D</url>
+    <description>CR - SQL injection attempt.</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre> 
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+</group> -->
+
+
+
+<group name="web,accesslog,">
+  <rule id="100301" level="7">
+    <if_sid>31100,31108</if_sid>
+    <url>=select%20|select+|insert%20|%20from%20|%20where%20|union%20|</url>
+    <description>CR - SQL injection attempt.</description>
+    <mitre>
+      <id>T1190</id>
+    </mitre>
+    <group>attack,sql_injection,pci_dss_6.5,pci_dss_11.4,pci_dss_6.5.1,gdpr_IV_35.7.d,nist_800_53_SA.11,nist_800_53_SI.4,tsc_CC6.6,tsc_CC7.1,tsc_CC8.1,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+</group>
+ 
+ 
+ 
+<group name="syslog,sshd,">
+  <rule id="100500" level="9" frequency="4" timeframe="120" ignore="60">
+    <if_matched_sid>5710</if_matched_sid>
+    <same_source_ip />
+    <description>CR: SSH - Brute Force - Non existent user - Possible Username Enumeration</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+    <group>authentication_failures,gdpr_IV_35.7.d,gdpr_IV_32.2,hipaa_164.312.b,nist_800_53_SI.4,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_11.4,pci_dss_10.2.4,pci_dss_10.2.5,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+
+  <rule id="100510" level="10" frequency="4" timeframe="120" ignore="60">
+    <if_matched_sid>5760</if_matched_sid>
+    <same_source_ip/>
+    <description>CR: SSH - Brute Force - Large Number of Authentication Failure</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+    <group>authentication_failures,gdpr_IV_35.7.d,gdpr_IV_32.2,hipaa_164.312.b,nist_800_53_SI.4,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_11.4,pci_dss_10.2.4,pci_dss_10.2.5,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+</group>
+
+
+
+<group name="syslog,vsftpd,">
+  <rule id="100610" level="5">
+    <match>FAIL LOGIN</match>
+    <match>vsftpd</match>
+    <description>FTP login failure detected in vsftpd.log</description>
+    <group>authentication_failures,vsftpd,</group>
+  </rule>
+
+  <rule id="100611" level="10" frequency="5" timeframe="60">
+    <if_matched_sid>100610</if_matched_sid>
+    <same_source_ip />
+    <description>FTP brute force attempt (5+ failures in 60 seconds)</description>
+    <group>bruteforce,vsftpd,authentication_failures,</group>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+</group>
+
+
+
+
+
+
+
+<group name="mysql">
+    <rule id="100951" level="8">
+        <decoded_as>custom_mysql</decoded_as>
+        <field name="command">CREATE</field>
+        <description>CR - '$(command)' MYSQL CREATE Command Detected</description>
+    </rule>
+
+    <rule id="100952" level="8">
+        <decoded_as>custom_mysql</decoded_as>
+        <field name="command">DROP</field>
+        <description>CR - '$(command)' MYSQL DROP Command Detected</description>
+    <mitre>
+      <id>T1485</id>
+    </mitre>
+    </rule>
+
+    <rule id="100953" level="8">
+        <decoded_as>custom_mysql</decoded_as>
+        <field name="command">ALTER</field>
+        <description>CR - '$(command)' MYSQL ALTER Command Detected</description>
+    <mitre>
+      <id>T1132</id>
+    </mitre>
+    </rule>
+
+    <rule id="100954" level="8">
+        <decoded_as>custom_mysql</decoded_as>
+        <field name="command">UPDATE</field>
+        <description>CR - '$(command)' MYSQL UPDATE Command Detected</description>
+    </rule>
+
+    <rule id="100956" level="8">
+        <decoded_as>custom_mysql</decoded_as>
+        <field name="command">DELETE</field>
+        <description>CR - '$(command)' MYSQL DELETE Command Detected</description>
+    <mitre>
+      <id>T1485</id>
+    </mitre>
+    </rule>
+
+    <rule id="100958" level="7">
+        <decoded_as>custom_mysql</decoded_as>
+        <field name="command">REVOKE</field>
+        <description>CR - '$(command)' MYSQL REVOKE Command Detected</description>
+    <mitre>
+      <id>T1027</id>
+    </mitre>
+    </rule>
+</group>
