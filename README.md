@@ -33,7 +33,7 @@ This agent is configured to perform several monitoring tasks. The relevant confi
 
 * **File Integrity Monitoring**: Wazuh is configured to monitor a specific directory.
 * **FTP Brute-Force Testing**: An FTP server is installed to test brute-force attack detection.
-* **Database Monitoring**: MySQL is installed and monitored by Wazuh.
+* **Database Monitoring**: MySQL is installed and monitored by Wazuh. The following article shows how MySQL database monitoring can be set up for Wazuh. https://medium.com/@tunctezdiyar/how-to-detect-critical-mysql-logs-with-wazuh-8c9ee19aec7c
 
 ---
 
