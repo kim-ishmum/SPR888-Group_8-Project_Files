@@ -2,6 +2,10 @@
 
 This repository contains the configuration files and documentation for the SPR888 Group 8 project paper.
 
+To Set Up Wazuh Manager and Wazu Agents programs please follow the below two setup guide links:
+- https://documentation.wazuh.com/current/installation-guide/wazuh-server/step-by-step.html
+- https://documentation.wazuh.com/current/installation-guide/wazuh-agent/index.html
+
 ---
 
 ## Wazuh Manager
